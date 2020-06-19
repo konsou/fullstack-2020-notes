@@ -6,7 +6,11 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "Remove-Item .\\build\\ -Recurse;cd ..\\fullstack-2020\\osa3\\notes-spa-frontend\\;npm run build --prod;Copy-Item .\\build\\ ..\\..\\..\\fullstack-2020-notes\\ -Recurse",
+    "deploy": "git push heroku master",
+    "deploy:full": "npm run build:ui;git add .;git commit -m ui-build;git push;npm run deploy",
+    "logs:prod": "heroku logs --tail"
   },
   "author": "Tomi Javanainen",
   "license": "MIT",
