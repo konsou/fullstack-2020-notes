@@ -8,6 +8,7 @@ const cors = require('cors')
 const app = express()
 
 const Note = require('./models/note')
+const ObjectId = require('mongodb').ObjectID;
 
 
 app.use(express.json())
@@ -75,9 +76,16 @@ app.post('/api/notes', (request, response) => {
 })
 
 app.delete('/api/notes/:id', (request, response) => {
-    const id = Number(request.params.id)
-    notes = notes.filter(note => note.id !== id)
-    response.status(204).end()
+    Note.deleteOne({ "_id": ObjectId(request.params.id) })
+        .then(response2 => {
+            console.log(`deleted ${response2.deletedCount} notes`)
+            response2.deletedCount
+                ? response.status(200).send()
+                : response.status(404).send()
+        })
+        .catch(error => {
+            console.log('error deleting:', error)
+        })
 })
 
 const PORT = process.env.PORT
