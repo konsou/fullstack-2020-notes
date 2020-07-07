@@ -23,12 +23,18 @@ app.get('/api/notes', (request, response) => {
     Note.find({}).then(notes => response.json(notes))
 })
 
-app.get('/api/notes/:id', (request, response) => {
-    const id = Number(request.params.id)
-    console.log(id)
-    Note.findById(id).then(note => {
-        response.json(note)
-    })
+app.get('/api/notes/:id', (request, response, next) => {
+    const id = request.params.id
+    console.log('GET', id)
+    Note.findById(id)
+        .then(note => {
+            if (note) {
+                response.json(note)
+            } else {
+                response.status(404).end()
+            }
+        })
+        .catch(error => next(error))
 })
 
 
@@ -54,18 +60,31 @@ app.post('/api/notes', (request, response) => {
     })
 })
 
-app.delete('/api/notes/:id', (request, response) => {
-    Note.deleteOne({ "_id": ObjectId(request.params.id) })
-        .then(response2 => {
-            console.log(`deleted ${response2.deletedCount} notes`)
-            response2.deletedCount
-                ? response.status(204).send()
-                : response.status(404).send()
+app.delete('/api/notes/:id', (request, response, next) => {
+    Note.findByIdAndRemove(request.params.id)
+        .then(result => {
+            response.status(204).end()
         })
-        .catch(error => {
-            console.log('error deleting:', error)
-        })
+        .catch(error => next(error))
 })
+
+const unknownEndpoint = (request, response) => {
+    response.status(400).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError'){
+        return response.status(400).send({ error: 'malformatted id'})
+    }
+
+    next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 
