@@ -8,7 +8,7 @@ const cors = require('cors')
 const app = express()
 
 const Note = require('./models/note')
-const ObjectId = require('mongodb').ObjectID;
+// const ObjectId = require('mongodb').ObjectID
 
 
 app.use(express.json())
@@ -58,6 +58,7 @@ app.post('/api/notes', (request, response, next) => {
 app.delete('/api/notes/:id', (request, response, next) => {
     Note.findByIdAndRemove(request.params.id)
         .then(result => {
+            console.log(result)
             response.status(204).end()
         })
         .catch(error => next(error))
@@ -73,9 +74,9 @@ const errorHandler = (error, request, response, next) => {
     console.error(error.message)
 
     if (error.name === 'CastError'){
-        return response.status(400).send({ error: 'malformatted id'})
+        return response.status(400).send({ error: 'malformatted id' })
     } else if (error.name === 'ValidationError'){
-        return response.status(400).send({ error: error.message})
+        return response.status(400).send({ error: error.message })
     }
 
     next(error)

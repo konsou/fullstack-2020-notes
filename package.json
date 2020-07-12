@@ -10,7 +10,8 @@
     "build:ui": "del /s /q build && cd ..\\fullstack-2020\\osa3\\notes-spa-frontend && npm run build && xcopy /e build ..\\..\\..\\fullstack-2020-notes\\build",
     "deploy": "git push heroku master",
     "deploy:full": "npm run build:ui;git add .;git commit -m ui-build;git push;npm run deploy",
-    "logs:prod": "heroku logs --tail"
+    "logs:prod": "heroku logs --tail",
+    "lint": "eslint ."
   },
   "author": "Tomi Javanainen",
   "license": "MIT",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "dotenv": "^8.2.0",
+    "eslint": "^7.4.0",
     "nodemon": "^2.0.4"
   }
 }

@@ -4,7 +4,7 @@ if (process.env.NODE_ENV !== 'production'){
     const dotenv = require('dotenv')
 
     dotenv.config()
-    console.log('env test: ', process.env.TEST)    
+    console.log('env test: ', process.env.TEST)
 }
 
 if (process.argv.length < 3){
