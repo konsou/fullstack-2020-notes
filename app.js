@@ -1,0 +1,34 @@
+const config = require('./utils/config')
+const express = require('express')
+const app = express()
+const cors = require('cors')
+
+const notesRouter = require('./controllers/notes')
+const middleware = require('./utils/middleware')
+const logger = require('./utils/logger')
+const mongoose = require('mongoose')
+
+logger.info('connecting to MongoDB')
+
+const dbUrl = `mongodb+srv://${config.DB_USERNAME}:${config.DB_PASSWORD}@fullstack2020-bysw0.mongodb.net/note-app?retryWrites=true&w=majority`
+mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(result => {
+        logger.info('connected to MongoDB')
+    })
+    .catch(error => {
+        logger.error('error connecting to MongoDB:', error.message)
+    })
+
+
+
+app.use(cors())
+app.use(express.static('build'))
+app.use(express.json())
+app.use(middleware.requestLogger)
+
+app.use('/api/notes', notesRouter)
+
+app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandler)
+
+module.exports = app
