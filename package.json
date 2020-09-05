@@ -4,9 +4,9 @@
   "description": "Notes with a backend service",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "jest --verbose",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "test": "cross-env NODE_ENV=test jest --verbose",
     "build:ui": "del /s /q build && cd ..\\fullstack-2020\\osa3\\notes-spa-frontend && npm run build && xcopy /e build ..\\..\\..\\fullstack-2020-notes\\build",
     "deploy": "git push heroku master",
     "deploy:full": "npm run build:ui;git add .;git commit -m ui-build;git push;npm run deploy",
@@ -16,10 +16,11 @@
   "author": "Tomi Javanainen",
   "license": "MIT",
   "dependencies": {
+    "bl": ">=2.2.1",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.2",
     "express": "^4.17.1",
-    "mongoose": "^5.9.19",
-    "bl": ">=2.2.1"
+    "mongoose": "^5.9.19"
   },
   "devDependencies": {
     "dotenv": "^8.2.0",
