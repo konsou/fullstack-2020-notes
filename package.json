@@ -26,7 +26,8 @@
     "dotenv": "^8.2.0",
     "eslint": "^7.4.0",
     "jest": "^26.4.2",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "supertest": "^4.0.2"
   },
   "jest": {
     "testEnvironment": "node"
