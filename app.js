@@ -10,8 +10,7 @@ const mongoose = require('mongoose')
 
 logger.info('connecting to MongoDB')
 
-const dbUrl = `mongodb+srv://${config.DB_USERNAME}:${config.DB_PASSWORD}@fullstack2020-bysw0.mongodb.net/note-app?retryWrites=true&w=majority`
-mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(result => {
         logger.info('connected to MongoDB')
     })
