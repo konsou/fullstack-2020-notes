@@ -25,7 +25,7 @@ notesRouter.post('/', async (request, response, next) => {
 
     const note = new Note({
         content: body.content,
-        important: body.important || false,
+        important: body.important === undefined ? false : body.important,
         date: new Date(),
     })
 
