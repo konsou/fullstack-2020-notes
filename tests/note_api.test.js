@@ -1,29 +1,17 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const helper = require('./test_helper')
 const app = require('../app')
 const Note = require('../models/note')
 
 const api = supertest(app)
 
-const initialNotes = [
-    {
-        content: 'HTML is easy',
-        date: new Date(),
-        important: false,
-    },
-    {
-        content: 'Browser can execute only Javascript',
-        date: new Date(),
-        important: true,
-    },
-]
-
 beforeEach(async () => {
     await Note.deleteMany({})
 
-    let noteObject = new Note(initialNotes[0])
+    let noteObject = new Note(helper.initialNotes[0])
     await noteObject.save()
-    noteObject = new Note(initialNotes[1])
+    noteObject = new Note(helper.initialNotes[1])
     await noteObject.save()
 })
 
@@ -37,7 +25,7 @@ test('notes are returned as json', async () => {
 test('all notes are returned', async () => {
     const response = await api.get('/api/notes')
 
-    expect(response.body).toHaveLength(initialNotes.length)
+    expect(response.body).toHaveLength(helper.initialNotes.length)
 })
 
 test('a specific note is within the returned notes', async () => {
@@ -60,12 +48,12 @@ test('a valid note can be added', async () => {
         .expect(200)
         .expect('Content-Type', /application\/json/)
 
-    const allNotes = await api.get('/api/notes')
+    const allNotesAfter = await helper.notesInDb()
+    expect(allNotesAfter).toHaveLength(helper.initialNotes.length + 1)
 
-    const contents = allNotes.body.map(r => r.content)
+    const noteContents = allNotesAfter.map(n => n.content)
 
-    expect(contents).toHaveLength(initialNotes.length + 1)
-    expect(contents).toContain(newNote.content)
+    expect(noteContents).toContain(newNote.content)
 })
 
 test('note without content is not added', async () => {
@@ -78,9 +66,9 @@ test('note without content is not added', async () => {
         .send(newNote)
         .expect(400)
 
-    const allNotes = await api.get('/api/notes')
+    const allNotesAfter = await helper.notesInDb()
 
-    expect(allNotes.body).toHaveLength(initialNotes.length)
+    expect(allNotesAfter).toHaveLength(helper.initialNotes.length)
 })
 
 afterAll(() => {
